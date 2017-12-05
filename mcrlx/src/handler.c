@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mcrlx.h"
-
+#include "mcrlx.h"
 
 void	init_handler(t_event event, t_evloop loop)
 {
-	if(loop->on_init)
+	if (loop->on_init)
 		loop->on_init(loop);
 	REF_DEC(event);
 }
@@ -49,47 +48,17 @@ void	key_handler(t_event event, t_evloop loop)
 	REF_DEC(event);
 }
 
-void	mouse_handler(t_event event, t_evloop loop)
+void	mouse_handler(t_event event, t_evloop lp)
 {
 	if (event->state)
 	{
-		if (loop->on_mouse_press[event->kc])
-			loop->on_mouse_press[event->kc](event->kc, event->x, event->y, loop);
+		if (lp->on_mouse_press[event->kc])
+			lp->on_mouse_press[event->kc](event->kc, event->x, event->y, lp);
 	}
 	else
 	{
-		if (loop->on_mouse_release[event->kc])
-			loop->on_mouse_release[event->kc](event->kc, event->x, event->y, loop);
+		if (lp->on_mouse_release[event->kc])
+			lp->on_mouse_release[event->kc](event->kc, event->x, event->y, lp);
 	}
 	REF_DEC(event);
-}
-
-void	motion_handler(t_event event, t_evloop loop)
-{
-	if (loop->on_mouse_motion)
-		loop->on_mouse_motion(event->mpos_cur, event->mpos_prev, loop);
-	REF_DEC(event);
-}
-
-void	tick_handler(t_event event, t_evloop loop)
-{
-	if (loop->on_tick)
-		loop->on_tick(loop);
-	// printf("TICK!!\n");
-	REF_DEC(event);
-}
-
-t_handlers	init_handlers(void)
-{
-	t_handlers	handlers;
-
-	handlers = (t_handlers)memalloc(sizeof(t_handler) * MAX_EVENTS);
-	handlers[EV_INIT] = &init_handler;
-	handlers[EV_EXIT] = &exit_handler;
-	handlers[EV_EXPOSE] = &expose_handler;
-	handlers[EV_KEY] = &key_handler;
-	handlers[EV_MOUSE] = &mouse_handler;
-	handlers[EV_MOTION] = &motion_handler;
-	handlers[EV_TICK] = &tick_handler;
-	return (handlers);
 }

@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fmath.c                                            :+:      :+:    :+:   */
+/*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmckinno <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/12 13:47:12 by tmckinno          #+#    #+#             */
-/*   Updated: 2017/11/12 13:47:14 by tmckinno         ###   ########.fr       */
+/*   Created: 2017/12/04 18:13:33 by tmckinno          #+#    #+#             */
+/*   Updated: 2017/12/04 18:13:35 by tmckinno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "mcrlx.h"
 
-
-t_cplx  cplx_add(t_cplx a, t_cplx b)
+void		*mcrlx_start_inner(void *display)
 {
-    t_cplx  ans;
-
-    ans.x = a.x + b.x;
-    ans.y = a.y + b.y;
-    return (ans);
+	mlx_loop(((t_display)display)->mlx);
+	return (NULL);
 }
 
-t_cplx cplx_sqr(t_cplx a)
+pthread_t	mcrlx_start(void)
 {
-    t_cplx ans;
+	t_display	display;
+	pthread_t	thread;
+	int			i;
 
-    ans.x = a.x * a.x - a.y * a.y;
-    ans.y = 2 * a.x * a.y;
-    return (ans);
+	display = get_display();
+	i = 0;
+	while (i < display->count)
+		pthread_create(&thread, NULL, &evloop, display->windows[i++]->loop);
+	mlx_loop(display->mlx);
+	return (thread);
 }
-

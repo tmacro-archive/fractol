@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #ifndef KEYS_H
 # define KEYS_H
 
@@ -19,9 +18,9 @@
 */
 
 # define MAX_KC 280
-# define MAX_MOUSE 6
+# define MAX_MOUSE 8
 
-/* 
+/*
 ** Macros for manipulating the value of keys in a t_key.
 ** These are here so that the implementation of the backend can be changed
 ** without changing any code
@@ -197,5 +196,7 @@
 # define KEY_MOUSE_MIDDLE 3
 # define KEY_MOUSE_SCROLL_UP 4
 # define KEY_MOUSE_SCROLL_DN 5
+# define MOUSE_X 6
+# define MOUSE_Y 7
 
 #endif

@@ -12,20 +12,27 @@
 
 #include "fractol.h"
 
-void    iter_grid(t_point start, t_point max, void (*f)(int, int, void*), void *data)
+void	print_help(char *name)
 {
-    int x;
-    int y;
-
-    x = start[0];
-    while (x < max[0])
-    {
-        y = start[1];
-        while (y < max[1])
-        {
-            f(x, y, data);
-            y++;
-        }
-        x++;
-    }
+	ft_putstr("Usage: ");
+	ft_putstr(name);
+	ft_putstr(" [--mandelbrot, --julia, --bship]\n");
 }
+
+void	e_handler(t_evloop loop)
+{
+	REF_LOG;
+	REF_CLN;
+	REF_LOG;
+	exit(0);
+}
+
+void	esc_handler(int c, t_evloop loop)
+{
+	c = 0;
+	e_handler(loop);
+}
+
+/*
+** ft_putstr("Multiple arguments can be specified\n");
+*/

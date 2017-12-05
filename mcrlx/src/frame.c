@@ -13,7 +13,6 @@
 #include "mcrlx.h"
 #include "clct.h"
 
-
 /*
 ** Creates a reusable frame
 ** segments specifies the number of buffers that the frame will be sliced into.
@@ -36,32 +35,20 @@ void	draw_frame(t_frame frame)
 {
 	int	buffer;
 	int	fail;
+
 	buffer = 0;
-	// printf("drawing frame\n");
 	fail = pthread_mutex_trylock(&frame->lock);
-	// printf("fail %i\n", fail);
 	if (fail)
 		return ;
-	// printf("----\n");
-	// while (buffer < frame->segments * frame->segments)
-	// {
-	// 	if (frame->buffers[buffer]->changed)
-	// 	{
-	// 		printf("drawing ");
-	// 		printf("buf: %i\n", buffer);
-	// 		draw_buffer(frame->buffers[buffer]);
-	// 	}
-	// 	buffer++;
-	// }
 	if ((*(frame->buffers))->changed)
 		draw_image(frame->window, (*(frame->buffers))->image, 0, 0);
 	pthread_mutex_unlock(&frame->lock);
-	// printf("done drawing frame\n");
 }
 
 void	iter_frame(t_frame frame, t_render f, void *data)
 {
 	int buffer;
+
 	buffer = 0;
 	while (buffer < frame->segments * frame->segments)
 		f(frame->buffers[buffer++], data);
@@ -71,12 +58,8 @@ void	*iter_func_wrapper(void *data)
 {
 	t_rndrdata	d;
 
-	// printf("test\n");
-	// pthread_detach(pthread_self());
 	d = (t_rndrdata)data;
 	d->func(d->buffer, d->data);
-	// printf("Drawing buffer %i, %i\n", d->buffer->rndros[0], d->buffer->rndros[1]);
-	// draw_buffer(d->buffer);
 	return (NULL);
 }
 
@@ -101,6 +84,4 @@ void	iter_frame_t(t_frame frame, t_render f, void *data)
 	}
 	while (--buffer >= 0)
 		pthread_join(ids[buffer], NULL);
-		// f(frame->buffers[buffer++], data);
-	draw_frame(frame);
 }

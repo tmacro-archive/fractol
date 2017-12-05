@@ -10,16 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "mcrlx.h"
-
 
 pthread_mutex_t	*get_render_lock(void)
 {
 	static pthread_mutex_t	render_lock;
 	static int				initd;
 
-	if(!initd)
+	if (!initd)
 	{
 		pthread_mutex_init(&render_lock, NULL);
 		initd = 1;
@@ -35,20 +33,10 @@ void			render(t_frame frame, t_render rdr, void *data)
 
 void			threaded_render(t_frame frame, t_render rdr, void *data)
 {
-	
-	// if (!pthread_mutex_trylock(get_render_lock()))
-	// {
-		// printf("unlocked\n");
-		if (!pthread_mutex_trylock(&frame->lock))
-		{
-			iter_frame_t(frame, rdr, data);
-			pthread_mutex_unlock(&frame->lock);
-		// printf("done rendering\n");
-			draw_frame(frame);
-		}
-		// pthread_mutex_unlock(get_render_lock());
-	// }
-	// else
-		// printf("locked\n");
-		
+	if (!pthread_mutex_trylock(&frame->lock))
+	{
+		iter_frame_t(frame, rdr, data);
+		pthread_mutex_unlock(&frame->lock);
+		draw_frame(frame);
+	}
 }

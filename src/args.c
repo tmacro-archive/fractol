@@ -10,39 +10,48 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "fractol.h"
+#include "fractol.h"
 
-int		is_valid_flag(char *arg)
+void	log_invalid_arg(char *token)
 {
-	ERR_CNR(arg, NULL, 0);
-	ERR_CNR(ft_strcmp(arg, "--julia"), 0, 1);
-	ERR_CNR(ft_strcmp(arg, "--mandelbrot"), 0, 1);
-	return (0);
+	ft_putstr("Invalid arguement \"");
+	ft_putstr(token);
+	ft_putstr("\"\n");
 }
 
-void	parse_arg(char *token, char **rem, t_args args)
+t_state	parse_type(char *token)
 {
 	if (!ft_strcmp(token, "--julia"))
-		args->julia = 1;
+		return (init_julia());
 	if (!ft_strcmp(token, "--mandelbrot"))
-		args->mandel = 1;
+		return (init_mandelbrot());
+	if (!ft_strcmp(token, "--bship"))
+		return (init_bship());
+	log_invalid_arg(token);
+	return (NULL);
 }
 
-t_args	parse_args(int ac, char **av)
+t_state	parse_args(int ac, char **av)
 {
-	char	*token;
-	t_args	args;
+	t_state	state;
 
-	NULL_GUARD((args = memalloc(sizeof(struct s_args))));
-	args->julia = 0;
-	args->mandel = 0;
-	args->error = 0;
-	while (ac--)
+	if (!(ac && av && *av && **av) || ac > 3)
+		return (NULL);
+	NULL_GUARD((state = parse_type(*av++)));
+	if (ac == 3)
 	{
-		token = *av++;
-		printf("token: %s\n", token);
-		if (is_valid_flag(token))
-			parse_arg(token, av, args);
+		state->cstart = parse_hexcode(*av++);		
+		state->cend = parse_hexcode(*av);
 	}
-	return (args);
+	else if (ac == 2)
+	{
+		state->cstart = parse_hexcode(*av);
+		state->cend = parse_hexcode("FFFFFF");
+	}
+	else
+	{
+		state->cstart = parse_hexcode("010101");
+		state->cend = parse_hexcode("FFFFFF");
+	}
+	return (state);
 }

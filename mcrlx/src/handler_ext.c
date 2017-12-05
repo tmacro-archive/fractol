@@ -1,37 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   util.c                                             :+:      :+:    :+:   */
+/*   handler_ext.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmckinno <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/19 12:49:40 by tmckinno          #+#    #+#             */
-/*   Updated: 2017/10/19 12:49:42 by tmckinno         ###   ########.fr       */
+/*   Created: 2017/12/04 17:44:05 by tmckinno          #+#    #+#             */
+/*   Updated: 2017/12/04 17:44:07 by tmckinno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mcrlx.h"
 
-int		pack_color(int r, int g, int b)
+void	motion_handler(t_event event, t_evloop loop)
 {
-	int color;
-
-	color = 0;
-	color |= (0 & 255) << 24;
-	color |= (r & 255) << 16;
-	color |= (g & 255) << 8;
-	color |= (b & 255);
-	return (color);
+	if (loop->on_mouse_motion)
+		loop->on_mouse_motion(event->mpos_cur, event->mpos_prev, loop);
+	REF_DEC(event);
 }
 
-void	zero_int_array(int *ar, int size)
+void	tick_handler(t_event event, t_evloop loop)
 {
-	while (--size >= 0)
-		ar[size] = 0;
-}
-
-void	null_ptr_array(void **ar, int size)
-{
-	while (--size >= 0)
-		ar[size] = 0;
+	if (loop->on_tick)
+		loop->on_tick(loop);
+	REF_DEC(event);
 }

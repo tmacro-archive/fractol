@@ -13,9 +13,9 @@
 #include "mcrlx.h"
 #include "clct.h"
 
-t_display	create_display()
+t_display	create_display(void)
 {
-	t_display   freshmeat;
+	t_display	freshmeat;
 
 	NULL_GUARD((freshmeat = (t_display)memalloc(sizeof(struct s_display))));
 	freshmeat->mlx = mlx_init();
@@ -24,9 +24,9 @@ t_display	create_display()
 	return (freshmeat);
 }
 
-t_display	get_display()
+t_display	get_display(void)
 {
-	static  t_display   display;
+	static t_display	display;
 
 	if (display == NULL)
 		display = create_display();
@@ -35,7 +35,6 @@ t_display	get_display()
 
 t_window	get_window(int index)
 {
-	
 	t_display	display;
 
 	NULL_GUARD((display = get_display()));

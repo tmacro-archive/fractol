@@ -1,19 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tmckinno <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/01 15:52:07 by tmckinno          #+#    #+#             */
+/*   Updated: 2017/12/01 15:52:09 by tmckinno         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fractol.h"
 #include <stdio.h>
 #include "clct.h"
 
 int		main(int ac, char **av)
 {
-	t_args		args;
+	t_state	state;
 
-	args = parse_args(ac, av);
-	// if (args->error)
-	// 	log_error(args->error);
-	if (!args->error && args->mandel)
-		create_app(init_mandelbrot());
-	if (!args->error && args->julia)
-		create_app(init_julia());
-	if (!args->error && (args->julia || args->mandel))
-		mcrlx_start();
+	state = parse_args(--ac, av + 1);
+	if (!state)
+	{
+		print_help(av[0]);
+		exit(1);
+	}
+	create_app(state, "FractMac");
+	mcrlx_start();
 	return (0);
 }

@@ -21,7 +21,7 @@
 # include <math.h>
 # include <pthread.h>
 # include "libutil.h"
-
+# include "colors.h"
 /*
 ** MAX_WINDOWS defines the maximum number of windows that the framework supports
 ** This can be changed at compile time to supported any number of windows
@@ -64,6 +64,7 @@
 */
 
 # define TICK_FREQ 1500
+
 /*
 ** Declare all of our structs and types here to simplify struct declarations
 */
@@ -71,7 +72,7 @@
 typedef int					t_point[2];
 typedef double				t_point_d[2];
 typedef int					t_key[MAX_KC];
-typedef int					t_mouse[MAX_MOUSE + 2];
+typedef int					t_mouse[MAX_MOUSE];
 
 struct s_display;
 struct s_window;
@@ -80,8 +81,8 @@ struct s_buffer;
 struct s_frame;
 struct s_evloop;
 struct s_rndrdata;
-// struct s_handler;
 struct s_event;
+struct s_ard;
 
 typedef struct s_display	*t_display;
 typedef struct s_window		*t_window;
@@ -91,6 +92,7 @@ typedef struct s_frame		*t_frame;
 typedef struct s_evloop		*t_evloop;
 typedef struct s_rndrdata	*t_rndrdata;
 typedef struct s_event		*t_event;
+typedef struct s_ard		*t_ard;
 
 typedef void				(*t_handler)(t_event, t_evloop);
 typedef void				(*t_render)(t_buffer, void*);
@@ -99,10 +101,9 @@ typedef void				(*t_keyhandler)(int, t_evloop);
 typedef void				(*t_mousehandler)(int, int, int, t_evloop);
 typedef void				(*t_motionhandler)(t_point, t_point, t_evloop);
 
-typedef t_handler			*t_handlers;			
+typedef t_handler			*t_handlers;
 typedef t_keyhandler		t_keyhandlers[MAX_KC];
 typedef t_mousehandler		t_mousehandlers[MAX_MOUSE];
-// typedef	void				(*t_render)(t_rndrdata);
 
 /*
 ** define some macros to make working woth our types easier
@@ -110,6 +111,7 @@ typedef t_mousehandler		t_mousehandlers[MAX_MOUSE];
 
 # define SET_TUPLE(tuple, x, y) tuple[0] = x; tuple[1] = y
 # define EXP_TUPLE(tuple) tuple[0], tuple[1]
+# define DUP_TUPLE(copy, tocopy) copy[0] = tocopy[0]; copy[1] = tocopy[1]
 
 /*
 ** Root mlx display structure, contains count and pointers to child windows
@@ -135,10 +137,6 @@ struct						s_window
 	t_display				display;
 	t_evloop				loop;
 };
-
-/*
-** 
-*/
 
 struct						s_image
 {
@@ -207,10 +205,18 @@ struct						s_rndrdata
 	void					*data;
 };
 
+struct						s_ard
+{
+	t_frame					frame;
+	t_render				rdr;
+	void					*data;
+};
+
 t_display					create_display();
 t_display					get_display();
 t_window					get_window(int index);
-t_window					create_window(t_point size, char *title, int segs, void *data);
+t_window					create_window(t_point size, char *title, int segs,
+										void *data);
 t_image						create_image(int width, int height);
 t_frame						create_frame(t_window window, int segments);
 t_buffer					create_buffer(void);
@@ -230,45 +236,38 @@ int							on_key_release(int kc, t_evloop loop);
 void						setup_hooks(t_evloop lp, t_window win);
 t_evloop					create_loop(t_window win, void *model);
 void						register_tick_hook(t_evloop lp, t_genhandler hdlr);
-void						register_expose_hook(t_evloop lp, t_genhandler hdlr);
+void						register_expose_hook(t_evloop lp,
+										t_genhandler hdlr);
 void						register_init_hook(t_evloop lp, t_genhandler hdlr);
 void						register_exit_hook(t_evloop lp, t_genhandler hdlr);
-void						register_motion_hook(t_evloop lp, t_motionhandler hdlr);
+void						register_motion_hook(t_evloop lp,
+										t_motionhandler hdlr);
 void						register_key_hook(t_evloop lp,
 										t_keyhandler hdlr, int kc, int st);
-void						register_mouse_hook(t_evloop lp, t_mousehandler hdlr,
-								int btn, int state);
-int							on_mouse_press(int btn, int x, int y, t_evloop loop);
-int							on_mouse_release(int btn, int x, int y, t_evloop loop);
+void						register_mouse_hook(t_evloop lp,
+									t_mousehandler hdlr, int btn, int state);
+int							on_mouse_press(int btn, int x, int y,
+										t_evloop loop);
+int							on_mouse_release(int btn, int x, int y,
+										t_evloop loop);
 int							on_mouse_motion(int x, int y, t_evloop loop);
 void						zero_int_array(int *ar, int size);
 void						null_ptr_array(void **ar, int size);
 void						iter_frame_t(t_frame frame, t_render f, void *data);
-void						threaded_render(t_frame frame, t_render rdr, void *data);
+void						threaded_render(t_frame frame, t_render rdr,
+										void *data);
+void						async_render(t_frame frame, t_render rdr,
+										void *data);
 t_event						create_event(int id);
 pthread_t					mcrlx_start(void);
 t_handlers					init_handlers(void);
-void	init_handler(t_event event, t_evloop loop);
-void	exit_handler(t_event event, t_evloop loop);
-void	expose_handler(t_event event, t_evloop loop);
-void	key_handler(t_event event, t_evloop loop);
-void	mouse_handler(t_event event, t_evloop loop);
-void	motion_handler(t_event event, t_evloop loop);
-
-
-
-struct						s_keyevent
-{
-	int						type;
-	t_key					keys;
-	int						code;
-
-};
-
-struct						s_mouseevent
-{
-	int						type;
-};
+void						init_handler(t_event event, t_evloop loop);
+void						exit_handler(t_event event, t_evloop loop);
+void						expose_handler(t_event event, t_evloop loop);
+void						key_handler(t_event event, t_evloop loop);
+void						mouse_handler(t_event event, t_evloop loop);
+void						motion_handler(t_event event, t_evloop loop);
+void						*evloop(void *lp);
+void						tick_handler(t_event event, t_evloop loop);
 
 #endif
-

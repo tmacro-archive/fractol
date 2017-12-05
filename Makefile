@@ -12,7 +12,7 @@
 
 NAME	= fractol
 CC		= gcc
-CFLAGS	= -Wall -Werror -g -fsanitize=address
+CFLAGS	= -Wall -Werror -g #-fsanitize=address
 OBJDIR	= build
 SRCDIR	= src
 INC		= -I./include/ -I./mcrlx/include/ -I./libft/includes/ -I./minilibx/

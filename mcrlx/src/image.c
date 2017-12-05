@@ -51,18 +51,11 @@ void	img_set_pixel(t_image img, int x, int y, int color)
 	char			*addr;
 	unsigned int	clr;
 
-	// printf("img setting pixel at: %i, %i\n", x, y);
 	if (!(x < img->width) || !(y < img->height))
 		return ;
-	// if (pthread_mutex_lock(&img->lock))
-	// 	return ;
 	addr = get_pixel_addr(img, x, y);
 	clr = mlx_get_color_value(get_display()->mlx, color);
-	// printf("%p\n", addr);
-	// printf("%i - %i\n", img->bpp, img->s_line);
-	// printf("%i\n", mlx_get_color_value(get_display()->mlx, color));
 	*addr = color;
 	*++addr = color >> 8;
 	*++addr = color >> 16;
-	// pthread_mutex_unlock(&img->lock);
 }

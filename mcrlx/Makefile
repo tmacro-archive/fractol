@@ -12,7 +12,7 @@
 
 NAME   = libmcrlx.a
 CC     = gcc
-CFLAGS = -Wall -Werror -g -fsanitize=address
+CFLAGS = -Wall -Werror #-g -fsanitize=address
 ECHO   = @/bin/echo 
 OBJDIR = build
 SRCDIR = src
