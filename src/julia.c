@@ -12,21 +12,23 @@
 
 #include "fractol.h"
 
-int		j_iter(t_point_d z, t_point_d c, int limit)
+int		jitr(t_point_d z, t_point_d c, int limit)
 {
-	double	x;
-	double	y;
-	double	tmp;
-	int		q;
+	double		x;
+	double		y;
+	t_point_d	squared;
+	int			q;
 
 	x = z[0];
 	y = z[1];
+	SET_TUPLE(squared, x * x, y * y);
 	q = 0;
-	while (x * x + y * y <= 4 && q < limit)
+	while (squared[0] + squared[1] <= 4 && q < limit)
 	{
-		tmp = x * x - y * y + c[0];
-		y = 2 * x * y + c[1];
-		x = tmp;
+		y = x * y;
+		y = y + y + c[1];
+		x = squared[0] - squared[1] + c[0];
+		SET_TUPLE(squared, x * x, y * y);
 		q++;
 	}
 	if (q < limit)
@@ -42,27 +44,27 @@ int		julia_iter_limit(double scale)
 	return ((int)ans);
 }
 
-void	render_julia(t_buffer buffer, void *data)
+void	render_julia(t_buffer buf, void *data)
 {
 	t_point		pos;
 	t_point_d	c;
 	t_state		st;
-	int			iters;
+	int			i;
 
 	st = (t_state)data;
-	iters = julia_iter_limit(st->scale);
-	pos[0] = buffer->tl[0];
-	while (pos[0] < buffer->tl[0] + buffer->size[0])
+	i = julia_iter_limit(st->scale);
+	pos[0] = buf->tl[0];
+	while (pos[0] < buf->tl[0] + buf->size[0])
 	{
-		pos[1] = buffer->tl[1];
-		while (pos[1] < buffer->tl[1] + buffer->size[1])
+		pos[1] = buf->tl[1];
+		while (pos[1] < buf->tl[1] + buf->size[1])
 		{
 			c[0] = (st->offset[0] + pos[0]) / st->scale;
 			c[1] = (st->offset[1] + pos[1]) / st->scale;
 			if ((!(pos[0] % 10) || !(pos[1] % 10)) && DEBUG_GRID_ENABLED)
-				buf_set_pixel(buffer, pos[0], pos[1], pack_color(252, 67, 73));
+				buf_set_pixel(buf, pos[0], pos[1], pack_color(252, 67, 73));
 			else
-				buf_set_pixel(buffer, pos[0], pos[1], colr(st, j_iter(c, st->c, iters)));
+				buf_set_pixel(buf, pos[0], pos[1], colr(st, jitr(c, st->c, i)));
 			pos[1] += 1;
 		}
 		pos[0] += 1;
@@ -73,7 +75,7 @@ t_state	init_julia(void)
 {
 	t_state	state;
 
-	NULL_GUARD((state = (t_state)memalloc(sizeof(struct s_state))));
+	NULL_GUARD((state = (t_state)memalloc_inc(sizeof(struct s_state))));
 	state->scale = 500.0;
 	state->offset[0] = 0;
 	state->offset[1] = 0;

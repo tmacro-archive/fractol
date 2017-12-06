@@ -12,7 +12,10 @@
 
 NAME   = libmcrlx.a
 CC     = gcc
-CFLAGS = -Wall -Werror #-g -fsanitize=address
+CFLAGS = -Wall -Werror
+ifeq ($(DEBUG), true)
+	CFLAGS += -g -fsanitize=address
+endif
 ECHO   = @/bin/echo 
 OBJDIR = build
 SRCDIR = src

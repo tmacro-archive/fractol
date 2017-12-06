@@ -15,22 +15,17 @@
 
 # define HX(x) ((x >= 'A') ? (x - 'A' + 10) : (x - '0'))
 
-union					u_color
+struct					s_color
 {
-	unsigned int		i;
-	struct				s_color
-	{
-		unsigned int	a:8;
-		unsigned int	r:8;
-		unsigned int	g:8;
-		unsigned int	b:8;
-	}					rgb;
+	unsigned int		r;
+	unsigned int		g;
+	unsigned int		b;
 };
 
-typedef union u_color	t_color;
+typedef struct s_color	t_color;
 
 t_color					step_to_color(t_color s, t_color e, int step);
-t_color 				parse_hexcode(char *hex);
+int						parse_hexcode(char *hex, t_color *color);
 int						is_valid_hexcode(char *hex);
 
 #endif

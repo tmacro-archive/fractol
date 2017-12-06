@@ -27,17 +27,21 @@ struct s_args;
 
 typedef struct s_state	*t_state;
 typedef struct s_args	*t_args;
+typedef t_state			(*t_init)(void);
+typedef	t_color			(*t_palette)(t_color, t_color, int);
 
 struct					s_state
 {
 	double				scale;
 	int					changed;
+	int					threads;
 	t_render			mode;
+	t_init				reset;
 	t_point				offset;
-	t_point_d			zoomc;
 	t_point_d			c;
 	t_color				cstart;
 	t_color				cend;
+	t_palette			color;
 };
 
 struct					s_args
@@ -48,10 +52,12 @@ struct					s_args
 	int					error;
 };
 
-t_state					init_state(void);
+t_state					init_mandelbrot(void);
+t_state					init_bship(void);
+t_state					init_julia(void);
+void					render_bship(t_buffer buffer, void *data);
 void					render_mandelbrot(t_buffer buffer, void *data);
 t_state					parse_args(int ac, char **av);
-t_state					init_mandelbrot(void);
 void					plus_handler(int kc, t_evloop loop);
 void					minus_handler(int kc, t_evloop loop);
 void					render_handler(t_evloop loop);
@@ -59,17 +65,12 @@ void					pan_handler(t_point cur, t_point prev, t_evloop loop);
 void					focal_handler(t_point cur, t_point prev, t_evloop loop);
 void					esc_handler(int c, t_evloop loop);
 void					create_app(t_state state, char *title);
-void					iter_grid(t_point start, t_point max,\
-									void (*f)(int, int, void*), void *data);
-int						cont_color(double z);
-int						gen_color(int c);
-int						quadrant(int x, int y);
-t_state					init_bship(void);
-void					render_bship(t_buffer buffer, void *data);
-t_state					init_julia(void);
 void					arrow_handler(int kc, t_evloop loop);
 void					print_help(char *name);
 void					e_handler(t_evloop loop);
 int						colr(t_state state, int step);
+void					reset_handler(int kc, t_evloop loop);
+t_color					grad_gen(t_color s, t_color e, int z);
+t_color					sine_gen(t_color s, t_color e, int z);
 
 #endif

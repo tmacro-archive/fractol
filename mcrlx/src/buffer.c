@@ -18,7 +18,7 @@ t_buffer	create_buffer(void)
 {
 	t_buffer	fresh;
 
-	NULL_GUARD((fresh = (t_buffer)memalloc(sizeof(struct s_buffer))));
+	NULL_GUARD((fresh = (t_buffer)memalloc_inc(sizeof(struct s_buffer))));
 	SET_TUPLE(fresh->rndros, 0, 0);
 	SET_TUPLE(fresh->tl, 0, 0);
 	fresh->changed = 0;
@@ -46,15 +46,14 @@ t_buffer	*create_buffers(t_frame f, int len)
 	t_image		image;
 
 	NULL_GUARD((image = create_image(f->window->width, f->window->height)));
-	REF_INC(image);
-	NULL_GUARD((bufs = (t_buffer*)memalloc(sizeof(t_buffer) * len * len)));
+	NULL_GUARD((bufs = (t_buffer*)memalloc_inc(sizeof(t_buffer) * len * len)));
 	pos[0] = 0;
 	while (pos[0] < len)
 	{
 		pos[1] = 0;
 		while (pos[1] < len)
 		{
-			REF_INC((*bufs = create_buffer()));
+			*bufs = create_buffer();
 			(*bufs)->image = image;
 			init_buffer(*bufs, f, pos, len);
 			pos[1] += 1;
@@ -70,7 +69,6 @@ void		draw_buffer(t_buffer buffer)
 	int	err;
 
 	err = pthread_mutex_lock(&buffer->frame->lock);
-	printf("err: %i\n", err);
 	if (!err)
 	{
 		draw_image(buffer->frame->window, buffer->image,\

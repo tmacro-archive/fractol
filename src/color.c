@@ -12,37 +12,27 @@
 
 #include "fractol.h"
 
-int	cont_color(double z)
+t_color	sine_gen(t_color s, t_color e, int z)
 {
-	int r;
-	int g;
-	int b;
+	t_color color;
 
-	r = sin(0.016 * z + 0) * 127.5 + 127.5;
-	g = sin(0.013 * z + 2) * 127.5 + 127.5;
-	b = sin(0.01 * z + 4) * 127.5 + 127.5;
-	return (pack_color(r, g, b));
+	color.r = sin(s.r + e.r * z) * 127.5 + 127.5;
+	color.g = sin(s.g + e.g * z) * 127.5 + 127.5;
+	color.b = sin(s.b + e.b * z) * 127.5 + 127.5;
+	return (color);
 }
 
-int	gen_color(int z)
+t_color	grad_gen(t_color s, t_color e, int z)
 {
-	int r;
-	int g;
-	int b;
-
-	r = sin(1.666 * z + 0) * 200 * 55;
-	g = sin(2.666 * z + 2) * 200 * 55;
-	b = sin(4.666 * z + 4) * 200 * 55;
-	return (pack_color(r, g, b));
+	return (step_to_color(s, e, z));
 }
 
-int	colr(t_state state, int step)
+int		colr(t_state state, int step)
 {
 	t_color	color;
 
 	if (!step)
-		return (pack_color(0,0,0));
-
-	color = step_to_color(state->cstart, state->cend, step);
-	return (pack_color(color.rgb.r, color.rgb.g, color.rgb.b));
+		return (pack_color(0, 0, 0));
+	color = state->color(state->cstart, state->cend, step);
+	return (pack_color(color.r, color.g, color.b));
 }

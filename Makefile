@@ -9,10 +9,14 @@
 #    Updated: 2017/07/15 14:08:29 by tmckinno         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+DEBUG	= false
 
 NAME	= fractol
 CC		= gcc
-CFLAGS	= -Wall -Werror -g #-fsanitize=address
+CFLAGS	= -Wall -Werror -Wextra
+ifeq ($(DEBUG), true)
+	CFLAGS += -g -fsanitize=address
+endif
 OBJDIR	= build
 SRCDIR	= src
 INC		= -I./include/ -I./mcrlx/include/ -I./libft/includes/ -I./minilibx/
@@ -21,10 +25,18 @@ MODULES	= libft minilibx mcrlx
 
 .PHONY = all clean fclean re deps
 
-FILES += $(wildcard $(SRCDIR)/*.c)
+FILES =	args.c \
+		burning_ship.c \
+		color.c \
+		hooks.c \
+		init.c \
+		julia.c \
+		main.c \
+		mandelbrot.c \
+		util.c
 
-OBJ = $(FILES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-SRC = $(FILES)
+SRC = $(FILES:%.c=$(SRCDIR)/%.c)
+OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 all: $(NAME) 
 
@@ -41,7 +53,8 @@ deps:
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
-$(NAME): deps $(OBJ)
+$(NAME): $(OBJ) | deps
+	@echo "Building $(NAME) with $(CFLAGS)"
 	@$(CC) $(CFLAGS) $(INC) $(LIB) $(OBJ) -framework OpenGL -framework AppKit -o $(NAME)
 
 clean:

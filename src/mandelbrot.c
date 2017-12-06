@@ -57,8 +57,8 @@ void	render_mandelbrot(t_buffer buf, void *data)
 		pos[1] = buf->tl[1];
 		while (pos[1] < buf->tl[1] + buf->size[1])
 		{
-			c[0] = ((st->offset[0] + pos[0]) / st->scale) + st->zoomc[0];
-			c[1] = ((st->offset[1] + pos[1]) / st->scale) + st->zoomc[1];
+			c[0] = ((st->offset[0] + pos[0]) / st->scale);
+			c[1] = ((st->offset[1] + pos[1]) / st->scale);
 			if ((!(pos[0] % 10) || !(pos[1] % 10)) && DEBUG_GRID_ENABLED)
 				buf_set_pixel(buf, pos[0], pos[1], pack_color(252, 67, 73));
 			else
@@ -73,7 +73,7 @@ t_state	init_mandelbrot(void)
 {
 	t_state	state;
 
-	NULL_GUARD((state = (t_state)memalloc(sizeof(struct s_state))));
+	NULL_GUARD((state = (t_state)memalloc_inc(sizeof(struct s_state))));
 	state->scale = 500.0;
 	state->offset[0] = 0;
 	state->offset[1] = 0;

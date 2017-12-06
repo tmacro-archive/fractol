@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "fractol.h"
-#include <stdio.h>
-#include "clct.h"
 
 int		main(int ac, char **av)
 {

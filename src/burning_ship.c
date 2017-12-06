@@ -12,7 +12,7 @@
 
 #include "fractol.h"
 
-int		bship_iter(t_point_d c, int limit)
+int		biter(t_point_d c, int limit)
 {
 	double	x;
 	double	y;
@@ -30,8 +30,8 @@ int		bship_iter(t_point_d c, int limit)
 		q++;
 	}
 	if (q < limit)
-		return (cont_color(q + 1.0 - (log(2) / sqrt(x * x + y * y)) / log(2)));
-	return (pack_color(0, 0, 0));
+		return (q);
+	return (0);
 }
 
 int		bship_iter_limit(double scale)
@@ -47,22 +47,22 @@ void	render_bship(t_buffer buffer, void *data)
 	t_point		pos;
 	t_point_d	c;
 	t_state		st;
-	int			iters;
+	int			i;
 
 	st = (t_state)data;
-	iters = bship_iter_limit(st->scale);
+	i = bship_iter_limit(st->scale);
 	pos[0] = buffer->tl[0];
 	while (pos[0] < buffer->tl[0] + buffer->size[0])
 	{
 		pos[1] = buffer->tl[1];
 		while (pos[1] < buffer->tl[1] + buffer->size[1])
 		{
-			c[0] = ((st->offset[0] + pos[0]) / st->scale) + st->zoomc[0];
-			c[1] = ((st->offset[1] + pos[1]) / st->scale) + st->zoomc[1];
+			c[0] = ((st->offset[0] + pos[0]) / st->scale);
+			c[1] = ((st->offset[1] + pos[1]) / st->scale);
 			if ((!(pos[0] % 10) || !(pos[1] % 10)) && DEBUG_GRID_ENABLED)
 				buf_set_pixel(buffer, pos[0], pos[1], pack_color(252, 67, 73));
 			else
-				buf_set_pixel(buffer, pos[0], pos[1], bship_iter(c, iters));
+				buf_set_pixel(buffer, pos[0], pos[1], colr(st, biter(c, i)));
 			pos[1] += 1;
 		}
 		pos[0] += 1;
@@ -73,7 +73,7 @@ t_state	init_bship(void)
 {
 	t_state	state;
 
-	NULL_GUARD((state = (t_state)memalloc(sizeof(struct s_state))));
+	NULL_GUARD((state = (t_state)memalloc_inc(sizeof(struct s_state))));
 	state->scale = 4310.766732;
 	state->offset[0] = -6995;
 	state->offset[1] = -445;

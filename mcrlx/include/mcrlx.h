@@ -13,15 +13,15 @@
 #ifndef MCRLX_H
 # define MCRLX_H
 
-# include <mlx.h>
+# include <pthread.h>
+# include <math.h>
+# include <string.h>
+# include "mlx.h"
 # include "macs.h"
 # include "keys.h"
-# include "string.h"
-# include <stdio.h>
-# include <math.h>
-# include <pthread.h>
 # include "libutil.h"
 # include "colors.h"
+
 /*
 ** MAX_WINDOWS defines the maximum number of windows that the framework supports
 ** This can be changed at compile time to supported any number of windows
@@ -38,6 +38,7 @@
 # define SEG_4 2
 # define SEG_9 3
 # define SEG_16 4
+# define SEG_36 6
 # define SEG_64 8
 # define SEG_100 10
 # define SEG_144 12
@@ -63,7 +64,7 @@
 ** Set to 0 to  disable
 */
 
-# define TICK_FREQ 1500
+# define TICK_FREQ 2000
 
 /*
 ** Declare all of our structs and types here to simplify struct declarations

@@ -20,7 +20,7 @@ t_image	create_image(int width, int height)
 	t_image		img;
 
 	NULL_GUARD((display = get_display()));
-	NULL_GUARD((img = (t_image)(memalloc(sizeof(struct s_image)))));
+	NULL_GUARD((img = (t_image)(memalloc_inc(sizeof(struct s_image)))));
 	img->img = mlx_new_image(display->mlx, width, height);
 	img->addr = mlx_get_data_addr(img->img,
 								&img->bpp, &img->s_line, &img->endian);

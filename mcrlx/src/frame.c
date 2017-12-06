@@ -26,7 +26,7 @@ t_frame	create_frame(t_window window, int segments)
 	NULL_GUARD((fresh = (t_frame)memalloc(sizeof(struct s_frame))));
 	fresh->window = window;
 	fresh->segments = segments;
-	REF_INC((fresh->buffers = create_buffers(fresh, segments)));
+	fresh->buffers = create_buffers(fresh, segments);
 	pthread_mutex_init(&fresh->lock, NULL);
 	return (fresh);
 }
@@ -60,6 +60,7 @@ void	*iter_func_wrapper(void *data)
 
 	d = (t_rndrdata)data;
 	d->func(d->buffer, d->data);
+	REF_DEC(data);
 	return (NULL);
 }
 
@@ -71,11 +72,11 @@ void	iter_frame_t(t_frame frame, t_render f, void *data)
 	t_rndrdata	rdata;
 
 	count = frame->segments * frame->segments;
-	ids = memalloc(sizeof(pthread_t) * count);
+	ids = memalloc_inc(sizeof(pthread_t) * count);
 	buffer = 0;
 	while (buffer < count)
 	{
-		rdata = (t_rndrdata)memalloc(sizeof(struct s_rndrdata));
+		rdata = (t_rndrdata)memalloc_inc(sizeof(struct s_rndrdata));
 		rdata->buffer = frame->buffers[buffer];
 		rdata->data = data;
 		rdata->func = f;
@@ -84,4 +85,5 @@ void	iter_frame_t(t_frame frame, t_render f, void *data)
 	}
 	while (--buffer >= 0)
 		pthread_join(ids[buffer], NULL);
+	REF_DEC(ids);
 }

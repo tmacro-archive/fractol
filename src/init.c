@@ -19,7 +19,7 @@ void	create_app(t_state state, char *title)
 
 	size[0] = WINDOW_WIDTH;
 	size[1] = WINDOW_HEIGHT;
-	REF_INC((win = create_window(size, title, SEG_256, state)));
+	REF_INC((win = create_window(size, title, SEG_64, state)));
 	register_tick_hook(win->loop, &render_handler);
 	register_key_hook(win->loop, &plus_handler, KEY_NUM_PLUS, 1);
 	register_key_hook(win->loop, &minus_handler, KEY_NUM_MINUS, 1);
@@ -32,4 +32,5 @@ void	create_app(t_state state, char *title)
 	register_key_hook(win->loop, &arrow_handler, KEY_RIGHT, 1);
 	register_exit_hook(win->loop, &e_handler);
 	register_motion_hook(win->loop, &pan_handler);
+	register_key_hook(win->loop, &reset_handler, KEY_R, 0);
 }

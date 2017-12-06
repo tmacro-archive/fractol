@@ -17,10 +17,9 @@ t_display	create_display(void)
 {
 	t_display	freshmeat;
 
-	NULL_GUARD((freshmeat = (t_display)memalloc(sizeof(struct s_display))));
+	NULL_GUARD((freshmeat = (t_display)memalloc_inc(sizeof(struct s_display))));
 	freshmeat->mlx = mlx_init();
 	freshmeat->count = 0;
-	REF_INC(freshmeat);
 	return (freshmeat);
 }
 
@@ -49,7 +48,7 @@ t_window	create_window(t_point size, char *title, int segments, void *data)
 	t_window	new;
 
 	NULL_GUARD((display = get_display()));
-	NULL_GUARD((new = (t_window)memalloc(sizeof(struct s_window))));
+	NULL_GUARD((new = (t_window)memalloc_inc(sizeof(struct s_window))));
 	new->window = mlx_new_window(display->mlx, size[0], size[1], title);
 	new->width = size[0];
 	new->height = size[1];
@@ -57,7 +56,6 @@ t_window	create_window(t_point size, char *title, int segments, void *data)
 	REF_INC((new->frame = create_frame(new, segments)));
 	REF_INC((new->loop = create_loop(new, data)));
 	display->windows[display->count] = new;
-	REF_INC(new);
 	display->count++;
 	return (new);
 }
