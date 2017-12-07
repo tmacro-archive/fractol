@@ -67,6 +67,7 @@ void					esc_handler(int c, t_evloop loop);
 void					create_app(t_state state, char *title);
 void					arrow_handler(int kc, t_evloop loop);
 void					print_help(char *name);
+void					color_help(void);
 void					e_handler(t_evloop loop);
 int						colr(t_state state, int step);
 void					reset_handler(int kc, t_evloop loop);

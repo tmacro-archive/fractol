@@ -20,6 +20,13 @@ void	print_help(char *name)
 	ft_putstr(" [--start <color>] [--end <color>]\n");
 }
 
+void	color_help(void)
+{
+	ft_putstr("No color mode provided!\n");
+	ft_putstr("You must provide either:\n");
+	ft_putstr("\t--gradient or --sine\n");
+}
+
 void	e_handler(t_evloop loop)
 {
 	t_evloop	lp;
@@ -50,6 +57,3 @@ void	reset_handler(int kc, t_evloop loop)
 	DUP_TUPLE(state->c, def->c);
 	state->changed = 1;
 }
-/*
-** ft_putstr("Multiple arguments can be specified\n");
-*/

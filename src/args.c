@@ -45,14 +45,19 @@ int		parse_flag(char *token, char **rem, int left, t_state state)
 	return (0);
 }
 
+void	mode_help(void)
+{
+	ft_putstr("You must provide a fractol to draw!\n");
+	ft_putstr("Available options:\nmandelbrot\njulia\nbship\n\n");
+}
+
 t_state	parse_args(int ac, char **av)
 {
 	t_state	state;
 	t_init	init;
 
-	if (!(ac && av && *av && **av))
-		return (NULL);
-	NULL_GUARD((init = parse_type(*av++)));
+	IFTR((!(ac && av && *av && **av)), mode_help(), NULL);
+	IFTR(((init = parse_type(*av++)) == NULL), mode_help(), NULL);
 	state = init();
 	state->reset = init;
 	state->color = NULL;
@@ -64,6 +69,6 @@ t_state	parse_args(int ac, char **av)
 				log_invalid_arg(*av), NULL);
 		av++;
 	}
-	IFTR((!state->color), ft_putstr("No color mode provided!\n"), NULL);
+	IFTR((!state->color), color_help(), NULL);
 	return (state);
 }
